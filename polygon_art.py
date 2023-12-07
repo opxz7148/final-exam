@@ -8,7 +8,63 @@ reduction_ratio = 0.618
 class Canva:
 
     def __init__(self):
+
+        self.level = 1
+        self.rand1 = 0
+        self.rand2 = 0
         self.choice = int(input("Which art do you want to generate? Enter a number between 1 to 8, inclusive: "))
+        turtle.speed(0)
+        turtle.bgcolor('black')
+        turtle.tracer(0)
+        turtle.colormode(255)
+        self.setting_art()
+
+    def setting_art(self):
+
+        if self.choice == 1:
+            self.rand1, self.rand2 = 3, 3
+
+        elif self.choice == 2:
+            self.rand1, self.rand2 = 4, 4
+
+        elif self.choice == 3:
+            self.rand1, self.rand2 = 5, 5
+
+        elif self.choice == 4:
+            self.rand1, self.rand2 = 3, 5
+
+        elif self.choice == 5:
+            self.rand1, self.rand2 = 3, 3
+            self.level = 3
+
+        elif self.choice == 6:
+            self.rand1, self.rand2 = 4, 4
+            self.level = 3
+
+        elif self.choice == 7:
+            self.rand1, self.rand2 = 5, 5
+            self.level = 3
+
+        elif self.choice == 8:
+            self.rand1, self.rand2 = 3, 5
+            self.level = 3
+
+    def make_art(self):
+        for _ in range(random.randint(20, 40)):
+            poly = Polygon(
+                num_sides=random.randint(self.rand1, self.rand2),
+                size=random.randint(50, 150),
+                orientation=random.randint(0, 90),
+                location=[random.randint(-300, 300), random.randint(-200, 200)],
+                color=self.get_new_color(),
+                border_size=random.randint(1, 10),
+                level=self.level
+            )
+            poly.draw()
+
+    def get_new_color(self):
+        return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
 
 
 class Polygon:
@@ -23,71 +79,37 @@ class Polygon:
         self.level = level
 
     def draw(self):
-        turtle.penup()
-        turtle.goto(self.location[0], self.location[1])
-        turtle.setheading(self.orien)
-        turtle.color(self.color)
-        turtle.pensize(self.border_size)
-        turtle.pendown()
-        for _ in range(self.num_sides):
-            turtle.forward(self.size)
-            turtle.left(360 / self.num_sides)
-        turtle.penup()
+
+        for _ in range(self.level):
+
+            turtle.penup()
+            turtle.goto(self.location[0], self.location[1])
+            turtle.setheading(self.orien)
+            turtle.color(self.color)
+            turtle.pensize(self.border_size)
+            turtle.pendown()
+
+            for _ in range(self.num_sides):
+                turtle.forward(self.size)
+                turtle.left(360 / self.num_sides)
+            turtle.penup()
+
+            self.reduction()
 
     def reduction(self):
 
+        turtle.penup()
+        turtle.forward(self.size * (1 - reduction_ratio) / 2)
+        turtle.left(90)
+        turtle.forward(self.size * (1 - reduction_ratio) / 2)
+        turtle.right(90)
+        self.location[0] = turtle.pos()[0]
+        self.location[1] = turtle.pos()[1]
+
+        self.size *= reduction_ratio
 
 
-def draw_polygon(num_sides, size, orientation, location, color, border_size):
-    turtle.penup()
-    turtle.goto(location[0], location[1])
-    turtle.setheading(orientation)
-    turtle.color(color)
-    turtle.pensize(border_size)
-    turtle.pendown()
-    for _ in range(num_sides):
-        turtle.forward(size)
-        turtle.left(360/num_sides)
-    turtle.penup()
-
-def get_new_color():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-#
-turtle.speed(0)
-turtle.bgcolor('black')
-turtle.tracer(0)
-turtle.colormode(255)
-
-# draw a polygon at a random location, orientation, color, and border line thickness
-num_sides = random.randint(3, 5) # triangle, square, or pentagon
-size = random.randint(50, 150)
-orientation = random.randint(0, 90)
-location = [random.randint(-300, 300), random.randint(-200, 200)]
-color = get_new_color()
-border_size = random.randint(1, 10)
-draw_polygon(num_sides, size, orientation, location, color, border_size)
-
-
-
-# reposition the turtle and get a new location
-turtle.penup()
-turtle.forward(size*(1-reduction_ratio)/2)
-turtle.left(90)
-turtle.forward(size*(1-reduction_ratio)/2)
-turtle.right(90)
-location[0] = turtle.pos()[0]
-location[1] = turtle.pos()[1]
-
-# adjust the size according to the reduction ratio
-size *= reduction_ratio
-
-# draw the second polygon embedded inside the original
-draw_polygon(num_sides, size, orientation, location, color, border_size)
-
-# hold the window; close it by clicking the window close 'x' mark
-
-
-poly1 = Polygon(4,100, 60, [122, -150], get_new_color(), 3)
-poly1.draw()
+canva1 = Canva()
+canva1.make_art()
 
 turtle.done()
